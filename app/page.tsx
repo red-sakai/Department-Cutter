@@ -18,6 +18,57 @@ const OPERATIONS_PROGRAM_ROLE_COLUMNS = [
 ] as const;
 const OPERATIONS_COMMITTEE_EXPORT_HEADER = "What position would you like to apply for?";
 const OPERATIONS_PROGRAM_ROLE_EXPORT_HEADER = "What position would you like to apply for? (Programs)";
+const OPERATIONS_POSITION_COLUMN = "What position would you like to apply for? (Operations)";
+const OPERATIONS_POSITION_OPTIONS = [
+  "Operations Managers",
+  "Logistics and Resource Coordinator",
+  "Ushering and Guest Coordinator",
+  "Registration and Access Coordinators",
+  "Media Documentation Coordinators",
+] as const;
+const OPERATIONS_MEDIA_COLUMN = "What role would you like to apply for? (Operations Media)";
+const OPERATIONS_MEDIA_OPTIONS = [
+  "Photo Documentation Coordinator",
+  "Video Documentation Coordinator",
+] as const;
+const OPERATIONS_POSITION_EXPORT_HEADER = OPERATIONS_POSITION_COLUMN;
+const OPERATIONS_MEDIA_EXPORT_HEADER = OPERATIONS_MEDIA_COLUMN;
+const CREATIVES_ROLE_COLUMN = "Which role would you like to apply for? (Creatives)";
+const CREATIVES_ROLE_OPTIONS = [
+  "Graphic Designers",
+  "Illustrators",
+  "Photo Editors",
+  "Video Editors",
+  "Animators",
+] as const;
+const CREATIVES_TEAM_OPTIONS = ["Graphic Design Team", "Multimedia Team"] as const;
+const CREATIVES_ROLE_EXPORT_HEADER = CREATIVES_ROLE_COLUMN;
+const CREATIVES_TEAM_EXPORT_HEADER = "Creatives Team";
+const MARKETING_ROLE_COLUMN = "Which role would you like to apply for? (Marketing)";
+const MARKETING_ROLE_OPTIONS = [
+  "Caption Writer",
+  "Engagement & Statistics Analyst",
+  "Content Strategist",
+  "Video Director",
+  "Photographer",
+  "Videographer",
+] as const;
+const MARKETING_TEAM_OPTIONS = ["Content Management Team", "Content Creation Team"] as const;
+const MARKETING_ROLE_EXPORT_HEADER = MARKETING_ROLE_COLUMN;
+const MARKETING_TEAM_EXPORT_HEADER = "Marketing Team";
+const RELATIONS_COMMUNITY_TEAM_COLUMN = "Which team would you like to apply for? (Relations Community)";
+const RELATIONS_COMMUNITY_TEAM_OPTIONS = [
+  "Member Engagement Team",
+  "Member Relations and Support Team",
+] as const;
+const RELATIONS_COMMUNITY_TEAM_EXPORT_HEADER = RELATIONS_COMMUNITY_TEAM_COLUMN;
+const RELATIONS_PUBLIC_TEAM_COLUMN = "Which team would you like to apply for? (Relations Public)";
+const RELATIONS_PUBLIC_TEAM_OPTIONS = [
+  "Organization Partnership Team",
+  "Community Partnership Team",
+  "Partnership Compliance Team",
+] as const;
+const RELATIONS_PUBLIC_TEAM_EXPORT_HEADER = RELATIONS_PUBLIC_TEAM_COLUMN;
 
 const REQUIRED_COLUMN_GROUPS = [
   { label: DEPARTMENT_COLUMN, columns: [DEPARTMENT_COLUMN] as const },
@@ -32,6 +83,30 @@ const REQUIRED_COLUMN_GROUPS = [
   {
     label: OPERATIONS_PROGRAM_ROLE_EXPORT_HEADER,
     columns: OPERATIONS_PROGRAM_ROLE_COLUMNS,
+  },
+  {
+    label: OPERATIONS_POSITION_COLUMN,
+    columns: [OPERATIONS_POSITION_COLUMN] as const,
+  },
+  {
+    label: OPERATIONS_MEDIA_COLUMN,
+    columns: [OPERATIONS_MEDIA_COLUMN] as const,
+  },
+  {
+    label: CREATIVES_ROLE_COLUMN,
+    columns: [CREATIVES_ROLE_COLUMN] as const,
+  },
+  {
+    label: MARKETING_ROLE_COLUMN,
+    columns: [MARKETING_ROLE_COLUMN] as const,
+  },
+  {
+    label: RELATIONS_COMMUNITY_TEAM_COLUMN,
+    columns: [RELATIONS_COMMUNITY_TEAM_COLUMN] as const,
+  },
+  {
+    label: RELATIONS_PUBLIC_TEAM_COLUMN,
+    columns: [RELATIONS_PUBLIC_TEAM_COLUMN] as const,
   },
 ] as const;
 
@@ -54,7 +129,7 @@ const TECH_DEPARTMENTS = [
 ] as const;
 
 const TECH_ROLE_OPTIONS = ["Cadet Member only", "Committee Member"] as const;
-const OPERATIONS_COMMITTEE_OPTIONS = ["Operations Committtee", "Programs Committee"] as const;
+const OPERATIONS_COMMITTEE_OPTIONS = ["Operations Committee", "Programs Committee"] as const;
 const OPERATIONS_PROGRAM_ROLES = [
   "Host Coordinators",
   "Hosts",
@@ -67,6 +142,14 @@ type TechDepartment = (typeof TECH_DEPARTMENTS)[number];
 type TechRole = (typeof TECH_ROLE_OPTIONS)[number];
 type OperationsCommittee = (typeof OPERATIONS_COMMITTEE_OPTIONS)[number];
 type OperationsProgramRole = (typeof OPERATIONS_PROGRAM_ROLES)[number];
+type OperationsPosition = (typeof OPERATIONS_POSITION_OPTIONS)[number];
+type OperationsMediaRole = (typeof OPERATIONS_MEDIA_OPTIONS)[number];
+type CreativesRole = (typeof CREATIVES_ROLE_OPTIONS)[number];
+type CreativesTeam = (typeof CREATIVES_TEAM_OPTIONS)[number];
+type MarketingRole = (typeof MARKETING_ROLE_OPTIONS)[number];
+type MarketingTeam = (typeof MARKETING_TEAM_OPTIONS)[number];
+type RelationsCommunityTeam = (typeof RELATIONS_COMMUNITY_TEAM_OPTIONS)[number];
+type RelationsPublicTeam = (typeof RELATIONS_PUBLIC_TEAM_OPTIONS)[number];
 type ResultBucket = { csv: string; rows: number };
 type DepartmentRow = {
   name: string;
@@ -76,6 +159,14 @@ type DepartmentRow = {
   techRole?: TechRole;
   operationsCommittee?: OperationsCommittee;
   operationsProgramRole?: OperationsProgramRole;
+  operationsPosition?: OperationsPosition;
+  operationsMediaRole?: OperationsMediaRole;
+  creativesRoles?: CreativesRole[];
+  creativesTeams?: CreativesTeam[];
+  marketingRoles?: MarketingRole[];
+  marketingTeams?: MarketingTeam[];
+  relationsCommunityTeam?: RelationsCommunityTeam;
+  relationsPublicTeam?: RelationsPublicTeam;
 };
 
 const OPERATIONS_PROGRAM_ROLE_ALIASES: Record<OperationsProgramRole, readonly string[]> = {
@@ -83,6 +174,18 @@ const OPERATIONS_PROGRAM_ROLE_ALIASES: Record<OperationsProgramRole, readonly st
   Hosts: ["Host"],
   "Program Managers": ["Program Manager"],
   "Technical Coordinators": ["Technical Coordinator"],
+};
+
+const OPERATIONS_POSITION_ALIASES: Partial<Record<OperationsPosition, readonly string[]>> = {
+  "Operations Managers": ["Operations Manager"],
+  "Logistics and Resource Coordinator": ["Logistics and Resource Coordinators"],
+  "Ushering and Guest Coordinator": ["Ushering and Guest Coordinators"],
+  "Registration and Access Coordinators": ["Registration and Access Coordinator"],
+  "Media Documentation Coordinators": [
+    "Media Documentation Coordinators",
+    "Media Documentation Officer",
+    "Media Documentation Coordinator",
+  ],
 };
 
 const normalizeText = (value: string) =>
@@ -135,6 +238,98 @@ const toOperationsProgramRole = (
   return undefined;
 };
 
+const toOperationsPosition = (value: string | undefined | null): OperationsPosition | undefined =>
+  {
+    const directMatch = normalizeChoice(value, OPERATIONS_POSITION_OPTIONS);
+    if (directMatch || !value) {
+      return directMatch;
+    }
+
+    const normalized = normalizeText(value);
+    for (const [position, aliases] of Object.entries(OPERATIONS_POSITION_ALIASES) as [
+      OperationsPosition,
+      readonly string[],
+    ][]) {
+      if (aliases.some((alias) => normalizeText(alias) === normalized)) {
+        return position;
+      }
+    }
+
+    return undefined;
+  };
+
+const toOperationsMediaRole = (value: string | undefined | null): OperationsMediaRole | undefined =>
+  normalizeChoice(value, OPERATIONS_MEDIA_OPTIONS);
+
+const parseCreativesRoles = (value: string | undefined | null): CreativesRole[] => {
+  if (!value) {
+    return [];
+  }
+
+  const tokens = value
+    .split(/[,;\n]+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  const roles = tokens
+    .map((token) => normalizeChoice(token, CREATIVES_ROLE_OPTIONS))
+    .filter((token): token is CreativesRole => Boolean(token));
+
+  return Array.from(new Set(roles));
+};
+
+const CREATIVES_ROLE_TO_TEAM: Record<CreativesRole, CreativesTeam> = {
+  "Graphic Designers": "Graphic Design Team",
+  Illustrators: "Graphic Design Team",
+  "Photo Editors": "Multimedia Team",
+  "Video Editors": "Multimedia Team",
+  Animators: "Multimedia Team",
+};
+
+const getCreativesTeams = (roles: CreativesRole[]): CreativesTeam[] => {
+  const teams = roles.map((role) => CREATIVES_ROLE_TO_TEAM[role]);
+  return Array.from(new Set(teams));
+};
+
+const parseMarketingRoles = (value: string | undefined | null): MarketingRole[] => {
+  if (!value) {
+    return [];
+  }
+
+  const tokens = value
+    .split(/[,;\n]+/)
+    .map((token) => token.trim())
+    .filter(Boolean);
+
+  const roles = tokens
+    .map((token) => normalizeChoice(token, MARKETING_ROLE_OPTIONS))
+    .filter((token): token is MarketingRole => Boolean(token));
+
+  return Array.from(new Set(roles));
+};
+
+const MARKETING_ROLE_TO_TEAM: Record<MarketingRole, MarketingTeam> = {
+  "Caption Writer": "Content Management Team",
+  "Engagement & Statistics Analyst": "Content Management Team",
+  "Content Strategist": "Content Management Team",
+  "Video Director": "Content Creation Team",
+  Photographer: "Content Creation Team",
+  Videographer: "Content Creation Team",
+};
+
+const getMarketingTeams = (roles: MarketingRole[]): MarketingTeam[] => {
+  const teams = roles.map((role) => MARKETING_ROLE_TO_TEAM[role]);
+  return Array.from(new Set(teams));
+};
+
+const toRelationsCommunityTeam = (
+  value: string | undefined | null
+): RelationsCommunityTeam | undefined => normalizeChoice(value, RELATIONS_COMMUNITY_TEAM_OPTIONS);
+
+const toRelationsPublicTeam = (
+  value: string | undefined | null
+): RelationsPublicTeam | undefined => normalizeChoice(value, RELATIONS_PUBLIC_TEAM_OPTIONS);
+
 const createEmptyResults = (): Record<Department, ResultBucket | null> =>
   DEPARTMENTS.reduce((acc, dept) => {
     acc[dept] = null;
@@ -165,6 +360,42 @@ const createEmptyOperationsProgramResults = (): Record<OperationsProgramRole, Re
     return acc;
   }, {} as Record<OperationsProgramRole, ResultBucket | null>);
 
+const createEmptyOperationsPositionResults = (): Record<OperationsPosition, ResultBucket | null> =>
+  OPERATIONS_POSITION_OPTIONS.reduce((acc, position) => {
+    acc[position] = null;
+    return acc;
+  }, {} as Record<OperationsPosition, ResultBucket | null>);
+
+const createEmptyOperationsMediaResults = (): Record<OperationsMediaRole, ResultBucket | null> =>
+  OPERATIONS_MEDIA_OPTIONS.reduce((acc, role) => {
+    acc[role] = null;
+    return acc;
+  }, {} as Record<OperationsMediaRole, ResultBucket | null>);
+
+const createEmptyCreativesTeamResults = (): Record<CreativesTeam, ResultBucket | null> =>
+  CREATIVES_TEAM_OPTIONS.reduce((acc, team) => {
+    acc[team] = null;
+    return acc;
+  }, {} as Record<CreativesTeam, ResultBucket | null>);
+
+const createEmptyMarketingTeamResults = (): Record<MarketingTeam, ResultBucket | null> =>
+  MARKETING_TEAM_OPTIONS.reduce((acc, team) => {
+    acc[team] = null;
+    return acc;
+  }, {} as Record<MarketingTeam, ResultBucket | null>);
+
+const createEmptyRelationsCommunityResults = (): Record<RelationsCommunityTeam, ResultBucket | null> =>
+  RELATIONS_COMMUNITY_TEAM_OPTIONS.reduce((acc, team) => {
+    acc[team] = null;
+    return acc;
+  }, {} as Record<RelationsCommunityTeam, ResultBucket | null>);
+
+const createEmptyRelationsPublicResults = (): Record<RelationsPublicTeam, ResultBucket | null> =>
+  RELATIONS_PUBLIC_TEAM_OPTIONS.reduce((acc, team) => {
+    acc[team] = null;
+    return acc;
+  }, {} as Record<RelationsPublicTeam, ResultBucket | null>);
+
 export default function Home() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -175,6 +406,20 @@ export default function Home() {
   const [operationsResults, setOperationsResults] = useState(createEmptyOperationsResults);
   const [operationsProgramResults, setOperationsProgramResults] = useState(
     createEmptyOperationsProgramResults
+  );
+  const [operationsPositionResults, setOperationsPositionResults] = useState(
+    createEmptyOperationsPositionResults
+  );
+  const [operationsMediaResults, setOperationsMediaResults] = useState(
+    createEmptyOperationsMediaResults
+  );
+  const [creativesTeamResults, setCreativesTeamResults] = useState(createEmptyCreativesTeamResults);
+  const [marketingTeamResults, setMarketingTeamResults] = useState(createEmptyMarketingTeamResults);
+  const [relationsCommunityResults, setRelationsCommunityResults] = useState(
+    createEmptyRelationsCommunityResults
+  );
+  const [relationsPublicResults, setRelationsPublicResults] = useState(
+    createEmptyRelationsPublicResults
   );
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
@@ -204,6 +449,48 @@ export default function Home() {
     );
   }, [operationsProgramResults]);
 
+  const totalOperationsPositionMatches = useMemo(() => {
+    return OPERATIONS_POSITION_OPTIONS.reduce(
+      (sum, position) => sum + (operationsPositionResults[position]?.rows ?? 0),
+      0
+    );
+  }, [operationsPositionResults]);
+
+  const totalOperationsMediaMatches = useMemo(() => {
+    return OPERATIONS_MEDIA_OPTIONS.reduce(
+      (sum, role) => sum + (operationsMediaResults[role]?.rows ?? 0),
+      0
+    );
+  }, [operationsMediaResults]);
+
+  const totalCreativesTeamMatches = useMemo(() => {
+    return CREATIVES_TEAM_OPTIONS.reduce(
+      (sum, team) => sum + (creativesTeamResults[team]?.rows ?? 0),
+      0
+    );
+  }, [creativesTeamResults]);
+
+  const totalMarketingTeamMatches = useMemo(() => {
+    return MARKETING_TEAM_OPTIONS.reduce(
+      (sum, team) => sum + (marketingTeamResults[team]?.rows ?? 0),
+      0
+    );
+  }, [marketingTeamResults]);
+
+  const totalRelationsCommunityMatches = useMemo(() => {
+    return RELATIONS_COMMUNITY_TEAM_OPTIONS.reduce(
+      (sum, team) => sum + (relationsCommunityResults[team]?.rows ?? 0),
+      0
+    );
+  }, [relationsCommunityResults]);
+
+  const totalRelationsPublicMatches = useMemo(() => {
+    return RELATIONS_PUBLIC_TEAM_OPTIONS.reduce(
+      (sum, team) => sum + (relationsPublicResults[team]?.rows ?? 0),
+      0
+    );
+  }, [relationsPublicResults]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
@@ -227,6 +514,12 @@ export default function Home() {
           setTechRoleResults(createEmptyTechRoleResults());
           setOperationsResults(createEmptyOperationsResults());
           setOperationsProgramResults(createEmptyOperationsProgramResults());
+          setOperationsPositionResults(createEmptyOperationsPositionResults());
+          setOperationsMediaResults(createEmptyOperationsMediaResults());
+          setCreativesTeamResults(createEmptyCreativesTeamResults());
+          setMarketingTeamResults(createEmptyMarketingTeamResults());
+          setRelationsCommunityResults(createEmptyRelationsCommunityResults());
+          setRelationsPublicResults(createEmptyRelationsPublicResults());
           setErrorMessage("No rows detected in the uploaded CSV.");
           return;
         }
@@ -242,6 +535,12 @@ export default function Home() {
           setTechRoleResults(createEmptyTechRoleResults());
           setOperationsResults(createEmptyOperationsResults());
           setOperationsProgramResults(createEmptyOperationsProgramResults());
+          setOperationsPositionResults(createEmptyOperationsPositionResults());
+          setOperationsMediaResults(createEmptyOperationsMediaResults());
+          setCreativesTeamResults(createEmptyCreativesTeamResults());
+          setMarketingTeamResults(createEmptyMarketingTeamResults());
+          setRelationsCommunityResults(createEmptyRelationsCommunityResults());
+          setRelationsPublicResults(createEmptyRelationsPublicResults());
           setErrorMessage(`Missing columns: ${missingColumns.join(", ")}`);
           return;
         }
@@ -271,6 +570,36 @@ export default function Home() {
           return acc;
         }, {} as Record<OperationsProgramRole, string[][]>);
 
+        const operationsPositionGrouped = OPERATIONS_POSITION_OPTIONS.reduce((acc, position) => {
+          acc[position] = [] as string[][];
+          return acc;
+        }, {} as Record<OperationsPosition, string[][]>);
+
+        const operationsMediaGrouped = OPERATIONS_MEDIA_OPTIONS.reduce((acc, role) => {
+          acc[role] = [] as string[][];
+          return acc;
+        }, {} as Record<OperationsMediaRole, string[][]>);
+
+        const creativesTeamGrouped = CREATIVES_TEAM_OPTIONS.reduce((acc, team) => {
+          acc[team] = [] as string[][];
+          return acc;
+        }, {} as Record<CreativesTeam, string[][]>);
+
+        const marketingTeamGrouped = MARKETING_TEAM_OPTIONS.reduce((acc, team) => {
+          acc[team] = [] as string[][];
+          return acc;
+        }, {} as Record<MarketingTeam, string[][]>);
+
+        const relationsCommunityGrouped = RELATIONS_COMMUNITY_TEAM_OPTIONS.reduce((acc, team) => {
+          acc[team] = [] as string[][];
+          return acc;
+        }, {} as Record<RelationsCommunityTeam, string[][]>);
+
+        const relationsPublicGrouped = RELATIONS_PUBLIC_TEAM_OPTIONS.reduce((acc, team) => {
+          acc[team] = [] as string[][];
+          return acc;
+        }, {} as Record<RelationsPublicTeam, string[][]>);
+
         parsedRows.forEach((row) => {
           const selectedDepartment = toDepartment(getColumnValue(row, [DEPARTMENT_COLUMN] as const));
           if (!selectedDepartment) {
@@ -285,6 +614,32 @@ export default function Home() {
           const operationsProgramValue = toOperationsProgramRole(
             getColumnValue(row, OPERATIONS_PROGRAM_ROLE_COLUMNS)
           );
+          const operationsPositionValue =
+            selectedDepartment === "Operations Department" && operationsValue === "Operations Committee"
+              ? toOperationsPosition(getColumnValue(row, [OPERATIONS_POSITION_COLUMN] as const))
+              : undefined;
+          const operationsMediaValue =
+            operationsPositionValue === "Media Documentation Coordinators"
+              ? toOperationsMediaRole(getColumnValue(row, [OPERATIONS_MEDIA_COLUMN] as const))
+              : undefined;
+          const creativesRoles =
+            selectedDepartment === "Creatives Department"
+              ? parseCreativesRoles(getColumnValue(row, [CREATIVES_ROLE_COLUMN] as const))
+              : [];
+          const creativesTeams = creativesRoles.length ? getCreativesTeams(creativesRoles) : [];
+          const marketingRoles =
+            selectedDepartment === "Marketing Department"
+              ? parseMarketingRoles(getColumnValue(row, [MARKETING_ROLE_COLUMN] as const))
+              : [];
+          const marketingTeams = marketingRoles.length ? getMarketingTeams(marketingRoles) : [];
+          const relationsCommunityTeam =
+            selectedDepartment === "Relations Department: Community"
+              ? toRelationsCommunityTeam(getColumnValue(row, [RELATIONS_COMMUNITY_TEAM_COLUMN] as const))
+              : undefined;
+          const relationsPublicTeam =
+            selectedDepartment === "Relations Department: Public"
+              ? toRelationsPublicTeam(getColumnValue(row, [RELATIONS_PUBLIC_TEAM_COLUMN] as const))
+              : undefined;
 
           grouped[selectedDepartment].push({
             name: nameValue,
@@ -294,6 +649,14 @@ export default function Home() {
             techRole: roleValue,
             operationsCommittee: operationsValue,
             operationsProgramRole: operationsProgramValue,
+            operationsPosition: operationsPositionValue,
+            operationsMediaRole: operationsMediaValue,
+            creativesRoles: creativesRoles.length ? creativesRoles : undefined,
+            creativesTeams: creativesTeams.length ? creativesTeams : undefined,
+            marketingRoles: marketingRoles.length ? marketingRoles : undefined,
+            marketingTeams: marketingTeams.length ? marketingTeams : undefined,
+            relationsCommunityTeam,
+            relationsPublicTeam,
           });
 
           if (selectedDepartment === "Technology Department" && techValue) {
@@ -317,6 +680,55 @@ export default function Home() {
               nameValue,
               emailValue,
               operationsProgramValue,
+            ]);
+          }
+
+          if (
+            selectedDepartment === "Operations Department" &&
+            operationsValue === "Operations Committee" &&
+            operationsPositionValue
+          ) {
+            operationsPositionGrouped[operationsPositionValue].push([
+              nameValue,
+              emailValue,
+              operationsPositionValue,
+            ]);
+          }
+
+          if (operationsPositionValue === "Media Documentation Coordinators" && operationsMediaValue) {
+            operationsMediaGrouped[operationsMediaValue].push([
+              nameValue,
+              emailValue,
+              operationsPositionValue,
+              operationsMediaValue,
+            ]);
+          }
+
+          if (selectedDepartment === "Creatives Department" && creativesTeams.length) {
+            creativesTeams.forEach((team) => {
+              creativesTeamGrouped[team].push([nameValue, emailValue, team]);
+            });
+          }
+
+          if (selectedDepartment === "Marketing Department" && marketingTeams.length) {
+            marketingTeams.forEach((team) => {
+              marketingTeamGrouped[team].push([nameValue, emailValue, team]);
+            });
+          }
+
+          if (selectedDepartment === "Relations Department: Community" && relationsCommunityTeam) {
+            relationsCommunityGrouped[relationsCommunityTeam].push([
+              nameValue,
+              emailValue,
+              relationsCommunityTeam,
+            ]);
+          }
+
+          if (selectedDepartment === "Relations Department: Public" && relationsPublicTeam) {
+            relationsPublicGrouped[relationsPublicTeam].push([
+              nameValue,
+              emailValue,
+              relationsPublicTeam,
             ]);
           }
         });
@@ -343,6 +755,42 @@ export default function Home() {
                   DEPARTMENT_COLUMN,
                   OPERATIONS_COMMITTEE_EXPORT_HEADER,
                   OPERATIONS_PROGRAM_ROLE_EXPORT_HEADER,
+                  OPERATIONS_POSITION_EXPORT_HEADER,
+                  OPERATIONS_MEDIA_EXPORT_HEADER,
+                ];
+              }
+              if (dept === "Creatives Department") {
+                return [
+                  NAME_COLUMN,
+                  EMAIL_COLUMN,
+                  DEPARTMENT_COLUMN,
+                  CREATIVES_ROLE_EXPORT_HEADER,
+                  CREATIVES_TEAM_EXPORT_HEADER,
+                ];
+              }
+              if (dept === "Marketing Department") {
+                return [
+                  NAME_COLUMN,
+                  EMAIL_COLUMN,
+                  DEPARTMENT_COLUMN,
+                  MARKETING_ROLE_EXPORT_HEADER,
+                  MARKETING_TEAM_EXPORT_HEADER,
+                ];
+              }
+              if (dept === "Relations Department: Public") {
+                return [
+                  NAME_COLUMN,
+                  EMAIL_COLUMN,
+                  DEPARTMENT_COLUMN,
+                  RELATIONS_PUBLIC_TEAM_EXPORT_HEADER,
+                ];
+              }
+              if (dept === "Relations Department: Community") {
+                return [
+                  NAME_COLUMN,
+                  EMAIL_COLUMN,
+                  DEPARTMENT_COLUMN,
+                  RELATIONS_COMMUNITY_TEAM_EXPORT_HEADER,
                 ];
               }
               return [NAME_COLUMN, EMAIL_COLUMN, DEPARTMENT_COLUMN];
@@ -368,6 +816,42 @@ export default function Home() {
                       entry.department,
                       entry.operationsCommittee ?? "",
                       entry.operationsProgramRole ?? "",
+                      entry.operationsPosition ?? "",
+                      entry.operationsMediaRole ?? "",
+                    ];
+                  }
+                  if (dept === "Creatives Department") {
+                    return [
+                      entry.name,
+                      entry.email,
+                      entry.department,
+                      entry.creativesRoles?.join("; ") ?? "",
+                      entry.creativesTeams?.join("; ") ?? "",
+                    ];
+                  }
+                  if (dept === "Marketing Department") {
+                    return [
+                      entry.name,
+                      entry.email,
+                      entry.department,
+                      entry.marketingRoles?.join("; ") ?? "",
+                      entry.marketingTeams?.join("; ") ?? "",
+                    ];
+                  }
+                  if (dept === "Relations Department: Public") {
+                    return [
+                      entry.name,
+                      entry.email,
+                      entry.department,
+                      entry.relationsPublicTeam ?? "",
+                    ];
+                  }
+                  if (dept === "Relations Department: Community") {
+                    return [
+                      entry.name,
+                      entry.email,
+                      entry.department,
+                      entry.relationsCommunityTeam ?? "",
                     ];
                   }
                   return [entry.name, entry.email, entry.department];
@@ -440,11 +924,112 @@ export default function Home() {
           return acc;
         }, {} as Record<OperationsProgramRole, ResultBucket | null>);
 
+        const operationsPositionFinalized = OPERATIONS_POSITION_OPTIONS.reduce((acc, position) => {
+          const entries = operationsPositionGrouped[position];
+          if (!entries.length) {
+            acc[position] = null;
+          } else {
+            const header = [NAME_COLUMN, EMAIL_COLUMN, OPERATIONS_POSITION_EXPORT_HEADER];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[position] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<OperationsPosition, ResultBucket | null>);
+
+        const operationsMediaFinalized = OPERATIONS_MEDIA_OPTIONS.reduce((acc, role) => {
+          const entries = operationsMediaGrouped[role];
+          if (!entries.length) {
+            acc[role] = null;
+          } else {
+            const header = [
+              NAME_COLUMN,
+              EMAIL_COLUMN,
+              OPERATIONS_POSITION_EXPORT_HEADER,
+              OPERATIONS_MEDIA_EXPORT_HEADER,
+            ];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[role] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<OperationsMediaRole, ResultBucket | null>);
+
+        const creativesTeamFinalized = CREATIVES_TEAM_OPTIONS.reduce((acc, team) => {
+          const entries = creativesTeamGrouped[team];
+          if (!entries.length) {
+            acc[team] = null;
+          } else {
+            const header = [NAME_COLUMN, EMAIL_COLUMN, CREATIVES_TEAM_EXPORT_HEADER];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[team] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<CreativesTeam, ResultBucket | null>);
+
+        const marketingTeamFinalized = MARKETING_TEAM_OPTIONS.reduce((acc, team) => {
+          const entries = marketingTeamGrouped[team];
+          if (!entries.length) {
+            acc[team] = null;
+          } else {
+            const header = [NAME_COLUMN, EMAIL_COLUMN, MARKETING_TEAM_EXPORT_HEADER];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[team] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<MarketingTeam, ResultBucket | null>);
+
+        const relationsCommunityFinalized = RELATIONS_COMMUNITY_TEAM_OPTIONS.reduce((acc, team) => {
+          const entries = relationsCommunityGrouped[team];
+          if (!entries.length) {
+            acc[team] = null;
+          } else {
+            const header = [NAME_COLUMN, EMAIL_COLUMN, RELATIONS_COMMUNITY_TEAM_EXPORT_HEADER];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[team] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<RelationsCommunityTeam, ResultBucket | null>);
+
+        const relationsPublicFinalized = RELATIONS_PUBLIC_TEAM_OPTIONS.reduce((acc, team) => {
+          const entries = relationsPublicGrouped[team];
+          if (!entries.length) {
+            acc[team] = null;
+          } else {
+            const header = [NAME_COLUMN, EMAIL_COLUMN, RELATIONS_PUBLIC_TEAM_EXPORT_HEADER];
+            const csvLines = [
+              header.join(","),
+              ...entries.map((entry) => entry.map(escapeForCsv).join(",")),
+            ];
+            acc[team] = { csv: csvLines.join("\r\n"), rows: entries.length };
+          }
+          return acc;
+        }, {} as Record<RelationsPublicTeam, ResultBucket | null>);
+
         setResults(finalized);
         setTechResults(techFinalized);
         setTechRoleResults(techRoleFinalized);
         setOperationsResults(operationsFinalized);
         setOperationsProgramResults(operationsProgramFinalized);
+        setOperationsPositionResults(operationsPositionFinalized);
+        setOperationsMediaResults(operationsMediaFinalized);
+        setCreativesTeamResults(creativesTeamFinalized);
+        setMarketingTeamResults(marketingTeamFinalized);
+        setRelationsCommunityResults(relationsCommunityFinalized);
+        setRelationsPublicResults(relationsPublicFinalized);
         setLastUpdated(new Date());
       } catch (error) {
         console.error(error);
@@ -453,6 +1038,12 @@ export default function Home() {
         setTechRoleResults(createEmptyTechRoleResults());
         setOperationsResults(createEmptyOperationsResults());
         setOperationsProgramResults(createEmptyOperationsProgramResults());
+        setOperationsPositionResults(createEmptyOperationsPositionResults());
+        setOperationsMediaResults(createEmptyOperationsMediaResults());
+        setCreativesTeamResults(createEmptyCreativesTeamResults());
+        setMarketingTeamResults(createEmptyMarketingTeamResults());
+        setRelationsCommunityResults(createEmptyRelationsCommunityResults());
+        setRelationsPublicResults(createEmptyRelationsPublicResults());
         setErrorMessage("Unable to process the selected CSV. Please verify its format.");
       } finally {
         setIsProcessing(false);
@@ -465,6 +1056,12 @@ export default function Home() {
       setTechRoleResults(createEmptyTechRoleResults());
       setOperationsResults(createEmptyOperationsResults());
       setOperationsProgramResults(createEmptyOperationsProgramResults());
+      setOperationsPositionResults(createEmptyOperationsPositionResults());
+      setOperationsMediaResults(createEmptyOperationsMediaResults());
+      setCreativesTeamResults(createEmptyCreativesTeamResults());
+      setMarketingTeamResults(createEmptyMarketingTeamResults());
+      setRelationsCommunityResults(createEmptyRelationsCommunityResults());
+      setRelationsPublicResults(createEmptyRelationsPublicResults());
       setErrorMessage("Failed to read the selected file.");
       setIsProcessing(false);
     };
@@ -506,6 +1103,30 @@ export default function Home() {
 
   const handleOperationsProgramDownload = (role: OperationsProgramRole) => {
     triggerDownload(`Operations-Programs-${role}`, operationsProgramResults[role]);
+  };
+
+  const handleOperationsPositionDownload = (position: OperationsPosition) => {
+    triggerDownload(`Operations-Committee-${position}`, operationsPositionResults[position]);
+  };
+
+  const handleOperationsMediaDownload = (role: OperationsMediaRole) => {
+    triggerDownload(`Operations-Media-${role}`, operationsMediaResults[role]);
+  };
+
+  const handleCreativesTeamDownload = (team: CreativesTeam) => {
+    triggerDownload(`Creatives-${team}`, creativesTeamResults[team]);
+  };
+
+  const handleMarketingTeamDownload = (team: MarketingTeam) => {
+    triggerDownload(`Marketing-${team}`, marketingTeamResults[team]);
+  };
+
+  const handleRelationsPublicDownload = (team: RelationsPublicTeam) => {
+    triggerDownload(`Relations-Public-${team}`, relationsPublicResults[team]);
+  };
+
+  const handleRelationsCommunityDownload = (team: RelationsCommunityTeam) => {
+    triggerDownload(`Relations-Community-${team}`, relationsCommunityResults[team]);
   };
 
   return (
@@ -554,7 +1175,12 @@ export default function Home() {
           {lastUpdated && !errorMessage && !isProcessing && (
             <p className="mt-4 text-sm text-slate-400">
               Generated {totalMatches} placements ({totalTechMatches} technology • {totalTechRoleMatches} tech pathway •
-              {totalOperationsCommitteeMatches} ops committee • {totalOperationsProgramMatches} program roles) •
+              {totalCreativesTeamMatches} creatives teams • {totalMarketingTeamMatches} marketing teams •
+              {totalRelationsPublicMatches} relations-public teams •
+              {totalRelationsCommunityMatches} relations-community teams •
+              {totalOperationsCommitteeMatches} ops committee •
+              {totalOperationsPositionMatches} ops positions • {totalOperationsMediaMatches} media roles •
+              {totalOperationsProgramMatches} program roles) •
               {lastUpdated.toLocaleString()}
             </p>
           )}
@@ -655,6 +1281,152 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="space-y-4 rounded-2xl border border-rose-500/30 bg-slate-900/60 p-6">
+          <header>
+            <p className="text-sm uppercase tracking-[0.3em] text-rose-300">Creatives Department split</p>
+            <h2 className="text-2xl font-semibold text-white">Download creatives team CSVs</h2>
+            <p className="text-sm text-slate-300">
+              Applicants selecting Creatives get routed into the Graphic Design or Multimedia teams based on their
+              role combinations.
+            </p>
+          </header>
+          <div className="grid gap-4 md:grid-cols-2">
+            {CREATIVES_TEAM_OPTIONS.map((team) => {
+              const bucket = creativesTeamResults[team];
+              return (
+                <article
+                  key={team}
+                  className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                >
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg font-semibold text-white">{team}</h3>
+                    <p className="text-sm text-slate-400">
+                      {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCreativesTeamDownload(team)}
+                    disabled={!bucket}
+                    className="mt-5 inline-flex items-center justify-center rounded-xl bg-rose-500 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-rose-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+                  >
+                    Download CSV
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border border-amber-500/30 bg-slate-900/60 p-6">
+          <header>
+            <p className="text-sm uppercase tracking-[0.3em] text-amber-300">Marketing Department split</p>
+            <h2 className="text-2xl font-semibold text-white">Download marketing team CSVs</h2>
+            <p className="text-sm text-slate-300">
+              Marketing applicants get mapped into Content Management or Content Creation teams depending on their
+              role checkboxes.
+            </p>
+          </header>
+          <div className="grid gap-4 md:grid-cols-2">
+            {MARKETING_TEAM_OPTIONS.map((team) => {
+              const bucket = marketingTeamResults[team];
+              return (
+                <article
+                  key={team}
+                  className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                >
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg font-semibold text-white">{team}</h3>
+                    <p className="text-sm text-slate-400">
+                      {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleMarketingTeamDownload(team)}
+                    disabled={!bucket}
+                    className="mt-5 inline-flex items-center justify-center rounded-xl bg-amber-500 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+                  >
+                    Download CSV
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border border-lime-500/30 bg-slate-900/60 p-6">
+          <header>
+            <p className="text-sm uppercase tracking-[0.3em] text-lime-300">Relations Public split</p>
+            <h2 className="text-2xl font-semibold text-white">Download relations public CSVs</h2>
+            <p className="text-sm text-slate-300">
+              Public relations applicants branch into the Organization, Community, or Compliance partnership teams.
+            </p>
+          </header>
+          <div className="grid gap-4 md:grid-cols-2">
+            {RELATIONS_PUBLIC_TEAM_OPTIONS.map((team) => {
+              const bucket = relationsPublicResults[team];
+              return (
+                <article
+                  key={team}
+                  className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                >
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg font-semibold text-white">{team}</h3>
+                    <p className="text-sm text-slate-400">
+                      {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRelationsPublicDownload(team)}
+                    disabled={!bucket}
+                    className="mt-5 inline-flex items-center justify-center rounded-xl bg-lime-500 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-lime-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+                  >
+                    Download CSV
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="space-y-4 rounded-2xl border border-cyan-500/30 bg-slate-900/60 p-6">
+          <header>
+            <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Relations Community split</p>
+            <h2 className="text-2xl font-semibold text-white">Download relations community CSVs</h2>
+            <p className="text-sm text-slate-300">
+              Community relations applicants choose between the Member Engagement and Member Relations teams.
+            </p>
+          </header>
+          <div className="grid gap-4 md:grid-cols-2">
+            {RELATIONS_COMMUNITY_TEAM_OPTIONS.map((team) => {
+              const bucket = relationsCommunityResults[team];
+              return (
+                <article
+                  key={team}
+                  className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                >
+                  <div className="space-y-1.5">
+                    <h3 className="text-lg font-semibold text-white">{team}</h3>
+                    <p className="text-sm text-slate-400">
+                      {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRelationsCommunityDownload(team)}
+                    disabled={!bucket}
+                    className="mt-5 inline-flex items-center justify-center rounded-xl bg-cyan-500 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-cyan-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+                  >
+                    Download CSV
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
         <section className="space-y-4 rounded-2xl border border-emerald-500/30 bg-slate-900/60 p-6">
           <header>
             <p className="text-sm uppercase tracking-[0.3em] text-emerald-300">Operations Department split</p>
@@ -684,6 +1456,64 @@ export default function Home() {
                       onClick={() => handleOperationsDownload(option)}
                       disabled={!bucket}
                       className="mt-5 inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-slate-700"
+                    >
+                      Download CSV
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Operations committee positions</p>
+            <div className="grid gap-4 md:grid-cols-2">
+              {OPERATIONS_POSITION_OPTIONS.map((position) => {
+                const bucket = operationsPositionResults[position];
+                return (
+                  <article
+                    key={position}
+                    className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                  >
+                    <div className="space-y-1.5">
+                      <h3 className="text-lg font-semibold text-white">{position}</h3>
+                      <p className="text-sm text-slate-400">
+                        {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleOperationsPositionDownload(position)}
+                      disabled={!bucket}
+                      className="mt-5 inline-flex items-center justify-center rounded-xl bg-emerald-400 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-emerald-300 disabled:cursor-not-allowed disabled:bg-slate-700"
+                    >
+                      Download CSV
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Media documentation roles</p>
+            <div className="grid gap-4 md:grid-cols-2">
+              {OPERATIONS_MEDIA_OPTIONS.map((role) => {
+                const bucket = operationsMediaResults[role];
+                return (
+                  <article
+                    key={role}
+                    className="flex flex-col justify-between rounded-2xl border border-white/10 bg-slate-950/40 p-5"
+                  >
+                    <div className="space-y-1.5">
+                      <h3 className="text-lg font-semibold text-white">{role}</h3>
+                      <p className="text-sm text-slate-400">
+                        {bucket ? `${bucket.rows} match${bucket.rows === 1 ? "" : "es"}` : "Awaiting data"}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleOperationsMediaDownload(role)}
+                      disabled={!bucket}
+                      className="mt-5 inline-flex items-center justify-center rounded-xl bg-emerald-300 px-4 py-2 text-sm font-medium text-white transition enabled:hover:bg-emerald-200 disabled:cursor-not-allowed disabled:bg-slate-700"
                     >
                       Download CSV
                     </button>
